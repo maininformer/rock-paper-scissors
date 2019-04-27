@@ -1,0 +1,132 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>RPS</title>
+  <meta name="description" content="The HTML5 Herald">
+  <meta name="author" content="SitePoint">
+  <style>
+  .top-level {
+    display: flex;
+    justify-content: space-evenly; 
+  }
+  .container {
+    display: flex;
+    justify-content: center;
+    margin: 5px 5px 5px 5px;
+  }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js"></script>
+</head>
+
+<body class="top-level">
+  <button onclick="reset()">Reset</button>
+  <div class="container" id="player1" style="visibility:hidden">
+   <p> Choose your set: </p>
+  <div class="container">
+   <select id="p1c1">
+    <option value="rock">&#x1F91C</option>
+    <option value="paper">&#x1F590</option>
+    <option value="scissors">&#x270C</option>
+   </select>
+   <select id="p1c2">
+    <option value="rock">&#x1F91C</option>
+    <option value="paper">&#x1F590</option>
+    <option value="scissors">&#x270C</option>
+   </select>
+   <select  id="p1c3">
+    <option value="rock">&#x1F91C</option>
+    <option value="paper">&#x1F590</option>
+    <option value="scissors">&#x270C</option>
+   </select>
+  </div>
+  <button onclick="submit()">Submit</button>
+  </div>
+
+  <div class="container" id="player2" style="visibility:hidden">
+   <p> Choose your set: </p>
+  <div class="container">
+   <select id="p2c1">
+    <option value="rock">&#x1F91C</option>
+    <option value="paper">&#x1F590</option>
+    <option value="scissors">&#x270C</option>
+   </select>
+   <select id="p2c2">
+    <option value="rock">&#x1F91C</option>
+    <option value="paper">&#x1F590</option>
+    <option value="scissors">&#x270C</option>
+   </select>
+   <select id="p2c3">
+    <option value="rock">&#x1F91C</option>
+    <option value="paper">&#x1F590</option>
+    <option value="scissors">&#x270C</option>
+   </select>
+  </div>
+  <button onclick="reveal()">Submit</button>
+  </div>
+  
+  <script>
+  function compare(c1, c2){
+  	if(c1 == c2){
+		return 0
+	} else if( (c1 == "rock" && c2 == "scissors") || (c1 == "paper" && c2 == "rock") || (c1 == "scissors" && c2 == "paper")) {
+		return 1
+	} else {
+		return -1
+	}
+  }    
+
+  function submit(){
+	var root= window.location.href;
+	var p1Choices = ["p1c1", "p1c2", "p1c3"]
+		.map(function (c){return document.getElementById(c)})
+		.map(function (sc){return CryptoJS.AES.encrypt(sc.options[sc.selectedIndex].value, localStorage.getItem("SECRET")).toString()});
+	alert("Send this to a friend: " + root + "?" + p1Choices.toString());
+  }
+
+  function reset(){
+    var root = window.location.href.split('?')[0] 
+    localStorage.clear();
+    window.location = root;
+  }
+
+  function reveal(){
+    var root = window.location.href.split('?')[0]
+	var p2ChoicesObj = ["p2c1", "p2c2", "p2c3"]
+		.map(function (c){return document.getElementById(c)})
+    var p2Choices = p2ChoicesObj
+        .map(function (sc){return sc.options[sc.selectedIndex].value});
+    p2ChoicesObj.forEach(function(c){c.disabled = true});
+	var p1Choices = localStorage
+          .getItem("p1Choices")
+          .split(',')
+          .map(function (c){
+              return CryptoJS.AES.decrypt(c, localStorage.getItem("SECRET")).toString(CryptoJS.enc.Utf8)
+          });
+
+	var score = [0,1,2]
+		.map(function(index){return compare(p2Choices[index], p1Choices[index])})
+		.reduce(function(acc, currVal){return acc + currVal}, 0)
+    if(score > 0){
+        alert("YOU WIN!" + String.fromCodePoint("0x1F618")); 
+    } else if ( score == 0 ) {
+        alert("It's a Draw. " + String.fromCodePoint("0x1F388") + "Play again:  " + root);    
+    } else {
+        alert("YOU LOSE " + String.fromCodePoint("0x1F611"));  
+    }
+  }
+
+  
+  localStorage.setItem("SECRET", "plum");
+  var p1Choices = window.location.search.slice(1).split(',');
+  if(p1Choices.length === 3){
+	localStorage.setItem("p1Choices", p1Choices);
+  	document.getElementById('player2').style.visibility = 'visible';
+  } else {
+	document.getElementById('player1').style.visibility = 'visible';
+  }
+  </script>
+</body>
+</html>
