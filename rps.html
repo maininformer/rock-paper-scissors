@@ -4,45 +4,56 @@
 <head>
   <meta charset="utf-8">
 
-  <title>RPS</title>
+  <title>&#x1F91C &#x1F590 &#x270C</title>
   <meta name="description" content="The HTML5 Herald">
   <meta name="author" content="SitePoint">
   <style>
   .top-level {
     display: flex;
     justify-content: space-evenly; 
+    flex-direction: column;
   }
   .container {
     display: flex;
     justify-content: center;
     margin: 5px 5px 5px 5px;
+    flex-direction: column;
+  }
+  .big-selector {
+    height: 150px;
+    width: 450px;
+    font-size: 100px;
+    display: flex;
+    justify-content: center;
   }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js"></script>
 </head>
 
 <body class="top-level">
-  <button onclick="reset()">Reset</button>
+  <div>
+    <button onclick="reset()" style="height:25px; background-color:#f77fbe;">Reset</button>
+  </div>
   <div class="container">
-   <p> Choose your set: </p>
-  <div class="container">
-   <select id="pc1">
-    <option value="rock">&#x1F91C</option>
-    <option value="paper">&#x1F590</option>
-    <option value="scissors">&#x270C</option>
+   <p style="text-align:center; font-size:25px;"> Choose your set: </p>
+  <div class="container" style="flex-direction:row; flex-wrap:wrap;">
+   <select id="pc1" class="big-selector">
+    <option value="rock">&#x1F91C &#x1F3D4 &#x1F91B</option>
+    <option value="paper">&#x1F590 &#x1F30A &#x1F590</option>
+    <option value="scissors">&#x270C &#x1F329 &#x270C</option>
    </select>
-   <select id="pc2">
-    <option value="rock">&#x1F91C</option>
-    <option value="paper">&#x1F590</option>
-    <option value="scissors">&#x270C</option>
+   <select id="pc2" class="big-selector">
+    <option value="rock">&#x1F91C &#x1F3D4 &#x1F91B</option>
+    <option value="paper">&#x1F590 &#x1F30A &#x1F590</option>
+    <option value="scissors">&#x270C &#x1F329 &#x270C</option>
    </select>
-   <select  id="pc3">
-    <option value="rock">&#x1F91C</option>
-    <option value="paper">&#x1F590</option>
-    <option value="scissors">&#x270C</option>
+   <select  id="pc3" class="big-selector">
+    <option value="rock">&#x1F91C &#x1F3D4 &#x1F91B</option>
+    <option value="paper">&#x1F590 &#x1F30A &#x1F590</option>
+    <option value="scissors">&#x270C &#x1F329 &#x270C</option>
    </select>
   </div>
-  <button onclick="submit()">Submit</button>
+  <button onclick="submit()" style="height:100px; background-color:#00A693; font-size:75px;">Submit</button>
   </div>
 
   <script>
