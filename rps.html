@@ -23,20 +23,20 @@
 
 <body class="top-level">
   <button onclick="reset()">Reset</button>
-  <div class="container" id="player1" style="visibility:hidden">
+  <div class="container">
    <p> Choose your set: </p>
   <div class="container">
-   <select id="p1c1">
+   <select id="pc1">
     <option value="rock">&#x1F91C</option>
     <option value="paper">&#x1F590</option>
     <option value="scissors">&#x270C</option>
    </select>
-   <select id="p1c2">
+   <select id="pc2">
     <option value="rock">&#x1F91C</option>
     <option value="paper">&#x1F590</option>
     <option value="scissors">&#x270C</option>
    </select>
-   <select  id="p1c3">
+   <select  id="pc3">
     <option value="rock">&#x1F91C</option>
     <option value="paper">&#x1F590</option>
     <option value="scissors">&#x270C</option>
@@ -45,28 +45,6 @@
   <button onclick="submit()">Submit</button>
   </div>
 
-  <div class="container" id="player2" style="visibility:hidden">
-   <p> Choose your set: </p>
-  <div class="container">
-   <select id="p2c1">
-    <option value="rock">&#x1F91C</option>
-    <option value="paper">&#x1F590</option>
-    <option value="scissors">&#x270C</option>
-   </select>
-   <select id="p2c2">
-    <option value="rock">&#x1F91C</option>
-    <option value="paper">&#x1F590</option>
-    <option value="scissors">&#x270C</option>
-   </select>
-   <select id="p2c3">
-    <option value="rock">&#x1F91C</option>
-    <option value="paper">&#x1F590</option>
-    <option value="scissors">&#x270C</option>
-   </select>
-  </div>
-  <button onclick="reveal()">Submit</button>
-  </div>
-  
   <script>
   function compare(c1, c2){
   	if(c1 == c2){
@@ -78,9 +56,9 @@
 	}
   }    
 
-  function submit(){
+  function submit_player1(){
 	var root= window.location.href;
-	var p1Choices = ["p1c1", "p1c2", "p1c3"]
+	var p1Choices = ["pc1", "pc2", "pc3"]
 		.map(function (c){return document.getElementById(c)})
 		.map(function (sc){return CryptoJS.AES.encrypt(sc.options[sc.selectedIndex].value, localStorage.getItem("SECRET")).toString()});
 	alert("Send this to a friend: " + root + "?" + p1Choices.toString());
@@ -92,13 +70,12 @@
     window.location = root;
   }
 
-  function reveal(){
+  function submit_player2(){
     var root = window.location.href.split('?')[0]
-	var p2ChoicesObj = ["p2c1", "p2c2", "p2c3"]
+	var p2ChoicesObj = ["pc1", "pc2", "pc3"]
 		.map(function (c){return document.getElementById(c)})
     var p2Choices = p2ChoicesObj
         .map(function (sc){return sc.options[sc.selectedIndex].value});
-    p2ChoicesObj.forEach(function(c){c.disabled = true});
 	var p1Choices = localStorage
           .getItem("p1Choices")
           .split(',')
@@ -122,10 +99,10 @@
   localStorage.setItem("SECRET", "plum");
   var p1Choices = window.location.search.slice(1).split(',');
   if(p1Choices.length === 3){
+    var submit = submit_player2
 	localStorage.setItem("p1Choices", p1Choices);
-  	document.getElementById('player2').style.visibility = 'visible';
   } else {
-	document.getElementById('player1').style.visibility = 'visible';
+    var submit = submit_player1
   }
   </script>
 </body>
