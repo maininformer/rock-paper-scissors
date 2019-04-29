@@ -72,7 +72,9 @@
 	var p1Choices = ["pc1", "pc2", "pc3"]
 		.map(function (c){return document.getElementById(c)})
 		.map(function (sc){return CryptoJS.AES.encrypt(sc.options[sc.selectedIndex].value, localStorage.getItem("SECRET")).toString()});
-	alert("Send this to a friend: " + root + "?" + p1Choices.toString());
+    navigator.clipboard.writeText(root + "?" + p1Choices.toString()).then(function(_){
+        alert("Send this link below to a friend, (I already copied it for you" +  String.fromCodePoint("0x1F970") + "):\n\n " + root + "?" + p1Choices.toString());
+    });
   }
 
   function reset(){
@@ -94,15 +96,16 @@
               return CryptoJS.AES.decrypt(c, localStorage.getItem("SECRET")).toString(CryptoJS.enc.Utf8)
           });
 
+    var opponentMessage = '\n' + 'Your opponent played '+p1Choices.toString()
 	var score = [0,1,2]
 		.map(function(index){return compare(p2Choices[index], p1Choices[index])})
 		.reduce(function(acc, currVal){return acc + currVal}, 0)
     if(score > 0){
-        alert("YOU WIN!" + String.fromCodePoint("0x1F618")); 
+        alert("YOU WIN!" + String.fromCodePoint("0x1F618") + opponentMessage); 
     } else if ( score == 0 ) {
         alert("It's a Draw. " + String.fromCodePoint("0x1F388") + "Play again:  " + root);    
     } else {
-        alert("YOU LOSE " + String.fromCodePoint("0x1F611"));  
+        alert("YOU LOSE " + String.fromCodePoint("0x1F611") + opponentMessage);  
     }
   }
 
