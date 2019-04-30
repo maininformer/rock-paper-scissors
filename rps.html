@@ -72,9 +72,8 @@
 	var p1Choices = ["pc1", "pc2", "pc3"]
 		.map(function (c){return document.getElementById(c)})
 		.map(function (sc){return CryptoJS.AES.encrypt(sc.options[sc.selectedIndex].value, localStorage.getItem("SECRET")).toString()});
-    navigator.clipboard.writeText(root + "?" + p1Choices.toString()).then(function(_){
-        alert("Send this link below to a friend, (I already copied it for you" +  String.fromCodePoint("0x1F970") + "):\n\n " + root + "?" + p1Choices.toString());
-    });
+      Clipboard.copy(root + "?" + p1Choices.toString());
+      alert("Send this link below to a friend, (I already copied it for you" +  String.fromCodePoint("0x1F970") + "):\n\n " + root + "?" + p1Choices.toString());
   }
 
   function reset(){
@@ -109,7 +108,52 @@
     }
   }
 
-  
+window.Clipboard = (function(window, document, navigator) {
+    var textArea,
+        copy;
+
+    function isOS() {
+        return navigator.userAgent.match(/ipad|iphone/i);
+    }
+
+    function createTextArea(text) {
+        textArea = document.createElement('textArea');
+        textArea.value = text;
+        document.body.appendChild(textArea);
+    }
+
+    function selectText() {
+        var range,
+            selection;
+
+        if (isOS()) {
+            range = document.createRange();
+            range.selectNodeContents(textArea);
+            selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            textArea.setSelectionRange(0, 999999);
+        } else {
+            textArea.select();
+        }
+    }
+
+    function copyToClipboard() {        
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+    }
+
+    copy = function(text) {
+        createTextArea(text);
+        selectText();
+        copyToClipboard();
+    };
+
+    return {
+        copy: copy
+    };
+})(window, document, navigator);
+
   localStorage.setItem("SECRET", "plum");
   var p1Choices = window.location.search.slice(1).split(',');
   if(p1Choices.length === 3){
