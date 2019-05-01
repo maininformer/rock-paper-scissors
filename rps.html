@@ -37,17 +37,7 @@
   <div class="container">
    <p style="text-align:center; font-size:25px;"> Choose your set: </p>
   <div class="container" style="flex-direction:row; flex-wrap:wrap;">
-   <select id="pc1" class="big-selector">
-    <option value="rock">&#x1F91C &#x1F3D4 &#x1F91B</option>
-    <option value="paper">&#x1F590 &#x1F30A &#x1F590</option>
-    <option value="scissors">&#x270C &#x1F329 &#x270C</option>
-   </select>
-   <select id="pc2" class="big-selector">
-    <option value="rock">&#x1F91C &#x1F3D4 &#x1F91B</option>
-    <option value="paper">&#x1F590 &#x1F30A &#x1F590</option>
-    <option value="scissors">&#x270C &#x1F329 &#x270C</option>
-   </select>
-   <select  id="pc3" class="big-selector">
+   <select id="pc" class="big-selector">
     <option value="rock">&#x1F91C &#x1F3D4 &#x1F91B</option>
     <option value="paper">&#x1F590 &#x1F30A &#x1F590</option>
     <option value="scissors">&#x270C &#x1F329 &#x270C</option>
@@ -69,11 +59,11 @@
 
   function submit_player1(){
 	var root= window.location.href;
-	var p1Choices = ["pc1", "pc2", "pc3"]
+	var p1Choice = ["pc"]
 		.map(function (c){return document.getElementById(c)})
 		.map(function (sc){return CryptoJS.AES.encrypt(sc.options[sc.selectedIndex].value, localStorage.getItem("SECRET")).toString()});
-      Clipboard.copy(root + "?" + p1Choices.toString());
-      alert("Send this link below to a friend, (I already copied it for you" +  String.fromCodePoint("0x1F970") + "):\n\n " + root + "?" + p1Choices.toString());
+      Clipboard.copy(root + "?" + p1Choice.toString());
+      alert("Send this link below to a friend, (I already copied it for you" +  String.fromCodePoint("0x1F970") + "):\n\n " + root + "?" + p1Choice.toString());
   }
 
   function reset(){
@@ -84,20 +74,20 @@
 
   function submit_player2(){
     var root = window.location.href.split('?')[0]
-	var p2ChoicesObj = ["pc1", "pc2", "pc3"]
+	var p2ChoiceObj = ["pc"]
 		.map(function (c){return document.getElementById(c)})
-    var p2Choices = p2ChoicesObj
+    var p2Choice = p2ChoiceObj
         .map(function (sc){return sc.options[sc.selectedIndex].value});
-	var p1Choices = localStorage
-          .getItem("p1Choices")
+	var p1Choice = localStorage
+          .getItem("p1Choice")
           .split(',')
           .map(function (c){
               return CryptoJS.AES.decrypt(c, localStorage.getItem("SECRET")).toString(CryptoJS.enc.Utf8)
           });
 
-    var opponentMessage = '\n' + 'Your opponent played '+p1Choices.toString()
-	var score = [0,1,2]
-		.map(function(index){return compare(p2Choices[index], p1Choices[index])})
+    var opponentMessage = '\n' + 'Your opponent played '+p1Choice
+	var score = [0]
+		.map(function(index){return compare(p2Choice[index], p1Choice[index])})
 		.reduce(function(acc, currVal){return acc + currVal}, 0)
     if(score > 0){
         alert("YOU WIN!" + String.fromCodePoint("0x1F618") + opponentMessage); 
@@ -155,10 +145,10 @@ window.Clipboard = (function(window, document, navigator) {
 })(window, document, navigator);
 
   localStorage.setItem("SECRET", "plum");
-  var p1Choices = window.location.search.slice(1).split(',');
-  if(p1Choices.length === 3){
+  var p1Choice = window.location.search.slice(1).split(',');
+  if(p1Choice.length === 1 && p1Choice[0] !== ""){
     var submit = submit_player2
-	localStorage.setItem("p1Choices", p1Choices);
+	localStorage.setItem("p1Choice", p1Choice);
   } else {
     var submit = submit_player1
   }
